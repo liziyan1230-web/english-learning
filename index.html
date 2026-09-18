@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#24253b" />
+    <meta name="description" content="自己的雅思词汇工作台" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="fixes.css" />
+    <title>Wordloom · 雅思词汇工作台</title>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#learn" aria-label="Wordloom 首页">
+          <span class="brand-mark">W</span>
+          <span>wordloom</span>
+        </a>
+        <div class="streak"><span aria-hidden="true">✦</span><strong id="streakCount">0</strong> 天连续学习</div>
+      </header>
+
+      <section id="learn" class="page active" aria-labelledby="learnTitle">
+        <div class="page-intro">
+          <p class="eyebrow">IELTS VOCABULARY DESK</p>
+          <h1 id="learnTitle">今天，把一个词真正变成你的。</h1>
+          <p id="dailyPrompt">先做 10 分钟热身，词汇会慢慢开花。</p>
+        </div>
+
+        <section class="hero-grid" aria-label="今日学习概览">
+          <article class="focus-card">
+            <div class="focus-card-head"><span>今日进度</span><button class="text-button" data-nav="review">去复习</button></div>
+            <div class="progress-line"><span id="dailyProgressBar"></span></div>
+            <div class="focus-numbers"><strong id="todayDone">0</strong><span>/ <span id="todayGoal">12</span> 个词</span></div>
+            <p id="reviewHint">今天还没有安排复习。</p>
+          </article>
+          <article class="mini-stat accent"><span>待复习</span><strong id="dueCount">0</strong><small>间隔重复</small></article>
+          <article class="mini-stat"><span>已掌握</span><strong id="masteredCount">0</strong><small>熟练度 ≥ 4</small></article>
+        </section>
+
+        <section class="study-area">
+          <div class="section-heading">
+            <div><p class="eyebrow">NEXT UP</p><h2>下一张词卡</h2></div>
+            <button id="shuffleButton" class="icon-button" aria-label="换一个词">↻</button>
+          </div>
+          <article id="wordCard" class="word-card" aria-live="polite">
+            <div class="card-topline"><span id="wordTag">Academic</span><button id="speakButton" class="listen-button" aria-label="朗读单词">◖ 听读</button></div>
+            <div class="word-main">
+              <h3 id="wordText">coherent</h3>
+              <span id="phonetic">/kəʊˈhɪərənt/</span>
+            </div>
+            <p id="definition" class="definition">adj. 连贯的；条理清晰的</p>
+            <p id="example" class="example">A coherent argument makes your writing easier to follow.</p>
+            <button id="revealButton" class="reveal-button">显示释义与例句</button>
+          </article>
+          <div class="recall-actions" id="recallActions" hidden>
+            <p>不看答案，你记得这个词吗？</p>
+            <div class="grade-buttons">
+              <button data-grade="0" class="grade again">忘了 <small>1天后</small></button>
+              <button data-grade="1" class="grade hard">有点难 <small>3天后</small></button>
+              <button data-grade="2" class="grade good">记得 <small>7天后</small></button>
+              <button data-grade="3" class="grade easy">很轻松 <small>14天后</small></button>
+            </div>
+          </div>
+        </section>
+
+        <section class="quick-section">
+          <div class="section-heading"><div><p class="eyebrow">YOUR LIBRARY</p><h2>最近添加</h2></div><button class="text-button" data-nav="words">查看全部</button></div>
+          <div id="recentWords" class="word-list"></div>
+        </section>
+      </section>
+
+      <section id="review" class="page" aria-labelledby="reviewTitle">
+        <div class="page-intro"><p class="eyebrow">SPACED REPETITION</p><h1 id="reviewTitle">复习不是重复，是恰好在遗忘前想起。</h1></div>
+        <section class="review-summary">
+          <div><span>现在应复习</span><strong id="reviewDueBig">0</strong></div>
+          <button id="startReview" class="primary-button">开始复习</button>
+        </section>
+        <div id="reviewEmpty" class="empty-state"><span>◎</span><h2>暂时没有到期的词</h2><p>继续学习新词，系统会在合适的时间提醒你复习。</p><button class="secondary-button" data-nav="learn">学习一个新词</button></div>
+        <div id="reviewQueue" class="review-queue" hidden></div>
+      </section>
+
+      <section id="words" class="page" aria-labelledby="wordsTitle">
+        <div class="page-intro words-intro"><div><p class="eyebrow">WORD LIBRARY</p><h1 id="wordsTitle">你的词汇花园</h1></div><button id="addWordButton" class="primary-button">+ 添加单词</button></div>
+        <div class="toolbar"><label class="search"><span>⌕</span><input id="wordSearch" type="search" placeholder="搜索单词或中文释义" /></label><select id="wordFilter" aria-label="筛选单词"><option value="all">全部词汇</option><option value="due">待复习</option><option value="mastered">已掌握</option><option value="new">未学习</option></select></div>
+        <div class="table-wrap"><table><thead><tr><th>单词</th><th>释义</th><th>熟练度</th><th>下次复习</th><th></th></tr></thead><tbody id="wordTable"></tbody></table></div>
+      </section>
+
+      <section id="stats" class="page" aria-labelledby="statsTitle">
+        <div class="page-intro"><p class="eyebrow">LEARNING RHYTHM</p><h1 id="statsTitle">你正在积累的，不只是词汇量。</h1></div>
+        <section class="stats-grid"><article><span>词库总数</span><strong id="totalWordsStat">0</strong></article><article><span>今日完成</span><strong id="todayStat">0</strong></article><article><span>总复习次数</span><strong id="reviewsStat">0</strong></article></section>
+        <section class="chart-card"><div class="section-heading"><div><p class="eyebrow">LAST 7 DAYS</p><h2>学习节奏</h2></div><span class="muted">完成词卡数</span></div><div id="weekChart" class="week-chart" role="img" aria-label="最近七天学习完成量图表"></div></section>
+        <section class="goal-card"><div><p class="eyebrow">DAILY GOAL</p><h2>每日目标</h2><p>给自己一个刚刚好的承诺。</p></div><label><span>每天 <strong id="goalValue">12</strong> 个词</span><input id="goalRange" type="range" min="5" max="40" step="1" value="12" /></label></section>
+      </section>
+
+      <section id="sync" class="page" aria-labelledby="syncTitle">
+        <div class="page-intro"><p class="eyebrow">YOUR DATA, YOURS</p><h1 id="syncTitle">把学习记录放在你自己的 GitHub。</h1><p>默认只存于本机；连接仓库后，可在手机和电脑之间同步。</p></div>
+        <section class="sync-card">
+          <div class="sync-badge">GitHub</div><div><h2>GitHub 仓库同步</h2><p>会读写仓库中的 <code>wordloom-data.json</code>。令牌只保留在当前浏览器会话，不会写入网站或仓库。</p></div>
+        </section>
+        <form id="githubForm" class="github-form">
+          <label>仓库（格式：用户名/仓库名）<input id="repoInput" required placeholder="例如 ziyan/ielts-wordloom" autocomplete="off" /></label>
+          <label>分支<input id="branchInput" value="main" required autocomplete="off" /></label>
+          <label>GitHub Fine-grained Personal Access Token<input id="tokenInput" type="password" placeholder="github_pat_..." autocomplete="off" /></label>
+          <p class="form-help">令牌需要对该仓库的 Contents 读写权限。首次同步会创建数据文件。</p>
+          <div class="form-actions"><button class="primary-button" type="submit">上传并同步</button><button id="pullButton" class="secondary-button" type="button">从 GitHub 下载</button></div>
+          <p id="syncStatus" class="sync-status" aria-live="polite"></p>
+        </form>
+        <section class="backup-row"><div><h2>本地备份</h2><p>导出一份 JSON，或从备份恢复。</p></div><div><button id="exportButton" class="secondary-button">导出</button><label class="secondary-button file-label">导入<input id="importInput" type="file" accept="application/json" hidden /></label></div></section>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="主导航">
+      <button class="nav-item active" data-nav="learn"><span>◒</span><b>学习</b></button>
+      <button class="nav-item" data-nav="review"><span>◉</span><b>复习</b><i id="navDue"></i></button>
+      <button class="nav-item" data-nav="words"><span>▤</span><b>词库</b></button>
+      <button class="nav-item" data-nav="stats"><span>⌁</span><b>统计</b></button>
+      <button class="nav-item" data-nav="sync"><span>↟</span><b>同步</b></button>
+    </nav>
+
+    <dialog id="wordDialog"><form id="wordForm" method="dialog"><div class="dialog-head"><h2>添加单词</h2><button type="button" id="closeDialog" class="icon-button" aria-label="关闭">×</button></div><label>英文单词<input name="word" required placeholder="例如 ubiquitous" /></label><label>音标<input name="phonetic" placeholder="/juːˈbɪkwɪtəs/" /></label><label>中文释义<input name="definition" required placeholder="adj. 无处不在的" /></label><label>例句<textarea name="example" required placeholder="Smartphones have become ubiquitous in modern life."></textarea></label><label>分类<select name="tag"><option>Academic</option><option>Writing</option><option>Speaking</option><option>Reading</option><option>Listening</option></select></label><div class="dialog-actions"><button type="button" id="deleteWord" class="danger-button" hidden>删除</button><button class="primary-button" value="default">保存单词</button></div></form></dialog>
+    <script src="app.js"></script>
+  </body>
+</html>
+
